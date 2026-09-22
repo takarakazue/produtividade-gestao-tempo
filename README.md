@@ -86,6 +86,28 @@ Também é possível utilizar filtros por **área** e **prioridade**, facilitand
 
 ---
 
+## 🚨 Monitoramento de tarefas atrasadas
+
+O sistema também realiza o monitoramento automático das tarefas que possuem prazo definido.
+
+Por meio de uma lógica implementada em **JavaScript**, o dashboard compara a data e o horário da tarefa com a data e o horário atuais. Quando uma tarefa ainda não foi concluída e seu prazo já expirou, ela é automaticamente identificada como **atrasada**.
+
+O dashboard apresenta:
+
+- quantidade total de tarefas atrasadas;
+- seção específica com as atividades vencidas;
+- identificação de há quantos dias a tarefa está atrasada;
+- indicação quando o prazo expirou no próprio dia;
+- destaque visual das atividades vencidas no dashboard e no calendário.
+
+Essa funcionalidade utiliza **lógica de programação**, sem necessidade de Inteligência Artificial, pois a identificação do atraso depende de uma comparação objetiva entre **prazo** e **status**. Dessa forma, a IA é utilizada apenas nas etapas em que sua capacidade de análise agrega valor ao sistema.
+
+### Tarefas atrasadas
+
+![Monitoramento de Tarefas Atrasadas](images/dashboard-geral.png)
+
+---
+
 ## 🤖 Utilização da Inteligência Artificial
 
 A Inteligência Artificial é utilizada como apoio à organização e à tomada de decisão.
@@ -274,7 +296,10 @@ O sistema desenvolvido possui:
 - lista de próximas tarefas;
 - visualização de tarefas prioritárias;
 - acompanhamento de status;
-- monitoramento de tarefas atrasadas por data e horário;
+- monitoramento automático de tarefas atrasadas;
+- identificação de prazo expirado por data e horário;
+- indicador com a quantidade de tarefas atrasadas;
+- destaque visual das atividades vencidas;
 - integração com base de dados;
 - automação entre diferentes ferramentas.
 
