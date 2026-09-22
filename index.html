@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Meu Sistema Operacional Pessoal</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- =========================================
+         CABEÇALHO
+    ========================================== -->
+
+      <header class="header">
+        <div>
+          <h1>⚡ Meu Sistema Operacional Pessoal</h1>
+          <p>Organização de tarefas, agenda e priorização com apoio de IA.</p>
+        </div>
+
+        <div class="badge">🤖 IA + Automação</div>
+      </header>
+
+      <!-- =========================================
+         NAVEGAÇÃO
+    ========================================== -->
+
+      <nav class="top-nav">
+        <a href="#visao-geral"> 📊 Visão Geral </a>
+
+        <a href="#calendario"> 📅 Calendário </a>
+
+        <a href="#eisenhower"> ⚖️ Eisenhower </a>
+      </nav>
+
+      <!-- =========================================
+         VISÃO GERAL
+    ========================================== -->
+
+      <section class="section" id="visao-geral">
+        <div class="section-title">
+          <div>
+            <span class="section-kicker"> Dashboard </span>
+
+            <h2>Visão Geral</h2>
+
+            <p>
+              Cadastre tarefas, acompanhe os principais indicadores e visualize
+              o que merece atenção.
+            </p>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <!-- =========================================
+             NOVA TAREFA
+        ========================================== -->
+
+          <div class="card task-form-card">
+            <h3>➕ Nova tarefa</h3>
+
+            <label for="taskInput"> Tarefa </label>
+
+            <input
+              id="taskInput"
+              type="text"
+              placeholder="Ex.: Entregar relatório amanhã"
+              autocomplete="off"
+            />
+
+            <div class="form-row">
+              <div>
+                <label for="dateInput"> Data </label>
+
+                <input id="dateInput" type="date" />
+              </div>
+
+              <div>
+                <label for="timeInput"> Horário </label>
+
+                <input id="timeInput" type="time" />
+              </div>
+            </div>
+
+            <label for="areaInput"> Área (opcional) </label>
+
+            <select id="areaInput">
+              <option value="">Deixar a IA decidir</option>
+
+              <option value="Trabalho">Trabalho</option>
+
+              <option value="Faculdade">Faculdade</option>
+
+              <option value="Pessoal">Pessoal</option>
+
+              <option value="Família">Família</option>
+            </select>
+
+            <button id="addBtn" class="primary" type="button">
+              🤖 Organizar com IA
+            </button>
+
+            <p class="hint">
+              ✨ A IA classifica automaticamente a tarefa por área, urgência,
+              importância, prioridade e tempo estimado.
+            </p>
+          </div>
+
+          <!-- =========================================
+             INDICADORES
+        ========================================== -->
+
+          <div class="dashboard-side">
+            <div class="stats stats-horizontal">
+              <div class="stat">
+                <span>Total de tarefas</span>
+                <strong id="totalStat">0</strong>
+              </div>
+
+              <div class="stat">
+                <span>Fazer agora</span>
+                <strong id="urgentStat">0</strong>
+              </div>
+
+              <div class="stat">
+                <span>Planejar</span>
+                <strong id="plannedStat">0</strong>
+              </div>
+
+              <div class="stat">
+                <span>Concluídas</span>
+                <strong id="doneStat">0</strong>
+              </div>
+            </div>
+
+            <div class="overview-lists">
+              <div class="card agenda-list">
+                <div class="list-heading">
+                  <h3>📅 Próximas tarefas</h3>
+                </div>
+
+                <div id="upcoming">
+                  <div class="empty">Carregando tarefas...</div>
+                </div>
+              </div>
+
+              <div class="card agenda-list">
+                <div class="list-heading">
+                  <h3>⚡ Prioridades</h3>
+                </div>
+
+                <div id="priorityList">
+                  <div class="empty">Carregando prioridades...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================
+         CALENDÁRIO
+    ========================================== -->
+
+      <section class="section" id="calendario">
+        <div class="section-title section-title-row">
+          <div>
+            <span class="section-kicker"> Planejamento </span>
+
+            <h2>Calendário mensal</h2>
+
+            <p>Visualize os compromissos e tarefas com data e horário.</p>
+          </div>
+
+          <div class="filters">
+            <select id="areaFilter" aria-label="Filtrar por área">
+              <option value="">Todas as áreas</option>
+
+              <option value="Trabalho">Trabalho</option>
+
+              <option value="Faculdade">Faculdade</option>
+
+              <option value="Pessoal">Pessoal</option>
+
+              <option value="Família">Família</option>
+            </select>
+
+            <select id="priorityFilter" aria-label="Filtrar por prioridade">
+              <option value="">Todas as prioridades</option>
+
+              <option value="Fazer agora">Fazer agora</option>
+
+              <option value="Planejar">Planejar</option>
+
+              <option value="Delegar">Delegar</option>
+
+              <option value="Adiar/Eliminar">Adiar/Eliminar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card calendar-card">
+          <div class="calendar-toolbar">
+            <button id="prevMonth" class="icon-button" type="button">◀</button>
+
+            <div id="monthTitle" class="month-title"></div>
+
+            <button id="nextMonth" class="icon-button" type="button">▶</button>
+          </div>
+
+          <div class="calendar" id="calendar"></div>
+        </div>
+      </section>
+
+      <!-- =========================================
+         MATRIZ DE EISENHOWER
+    ========================================== -->
+
+      <section class="section" id="eisenhower">
+        <div class="section-title">
+          <div>
+            <span class="section-kicker"> Técnica de produtividade </span>
+
+            <h2>Matriz de Eisenhower</h2>
+
+            <p>
+              As tarefas são distribuídas automaticamente conforme urgência e
+              importância.
+            </p>
+          </div>
+        </div>
+
+        <div class="eisenhower-grid">
+          <!-- FAZER AGORA -->
+
+          <div class="quadrant quadrant-now">
+            <div class="quadrant-header">
+              <div>
+                <span class="quadrant-icon"> 🔴 </span>
+
+                <div>
+                  <h3>Fazer agora</h3>
+                  <p>Urgente e importante</p>
+                </div>
+              </div>
+
+              <strong class="quadrant-count" id="countNow"> 0 </strong>
+            </div>
+
+            <div class="quadrant-list" id="eisenhowerNow"></div>
+          </div>
+
+          <!-- PLANEJAR -->
+
+          <div class="quadrant quadrant-plan">
+            <div class="quadrant-header">
+              <div>
+                <span class="quadrant-icon"> 🟠 </span>
+
+                <div>
+                  <h3>Planejar</h3>
+                  <p>Importante e não urgente</p>
+                </div>
+              </div>
+
+              <strong class="quadrant-count" id="countPlan"> 0 </strong>
+            </div>
+
+            <div class="quadrant-list" id="eisenhowerPlan"></div>
+          </div>
+
+          <!-- DELEGAR -->
+
+          <div class="quadrant quadrant-delegate">
+            <div class="quadrant-header">
+              <div>
+                <span class="quadrant-icon"> 🔵 </span>
+
+                <div>
+                  <h3>Delegar</h3>
+                  <p>Urgente e não importante</p>
+                </div>
+              </div>
+
+              <strong class="quadrant-count" id="countDelegate"> 0 </strong>
+            </div>
+
+            <div class="quadrant-list" id="eisenhowerDelegate"></div>
+          </div>
+
+          <!-- ADIAR / ELIMINAR -->
+
+          <div class="quadrant quadrant-later">
+            <div class="quadrant-header">
+              <div>
+                <span class="quadrant-icon"> ⚪ </span>
+
+                <div>
+                  <h3>Adiar / Eliminar</h3>
+                  <p>Não urgente e não importante</p>
+                </div>
+              </div>
+
+              <strong class="quadrant-count" id="countLater"> 0 </strong>
+            </div>
+
+            <div class="quadrant-list" id="eisenhowerLater"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =========================================
+       TOAST
+  ========================================== -->
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
