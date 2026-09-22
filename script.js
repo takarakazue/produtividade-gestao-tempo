@@ -1,5 +1,5 @@
 /* =========================================================
-   MEU SISTEMA OPERACIONAL PESSOAL - V2
+   MEU SISTEMA OPERACIONAL PESSOAL
 ========================================================= */
 
 /* =========================================================
@@ -59,7 +59,6 @@ async function loadTasks(showMessage = true) {
 
     const response = await fetch(DASHBOARD_WEBHOOK_URL, {
       method: "GET",
-
       cache: "no-store",
     });
 
@@ -221,6 +220,86 @@ function isDone(task) {
 }
 
 /* =========================================================
+   PRAZO / ATRASO
+========================================================= */
+
+/*
+Se houver horário:
+2026-09-22 + 10:30
+vira atraso após 10:30.
+
+Se houver somente data:
+a tarefa só fica atrasada depois
+das 23:59 daquele dia.
+*/
+
+function getDeadline(task) {
+  if (!task.date) {
+    return null;
+  }
+
+  let deadline;
+
+  if (task.time) {
+    deadline = new Date(`${task.date}T${task.time}:00`);
+  } else {
+    deadline = new Date(`${task.date}T23:59:59.999`);
+  }
+
+  if (Number.isNaN(deadline.getTime())) {
+    return null;
+  }
+
+  return deadline;
+}
+
+function isOverdue(task) {
+  if (isDone(task)) {
+    return false;
+  }
+
+  const deadline = getDeadline(task);
+
+  if (!deadline) {
+    return false;
+  }
+
+  return new Date() > deadline;
+}
+
+/* =========================================================
+   TEXTO DO ATRASO
+========================================================= */
+
+function overdueLabel(task) {
+  const deadline = getDeadline(task);
+
+  if (!deadline) {
+    return "";
+  }
+
+  const now = new Date();
+
+  const difference = now.getTime() - deadline.getTime();
+
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+  if (days <= 0) {
+    if (task.time) {
+      return `Prazo expirado hoje às ${task.time}`;
+    }
+
+    return "Prazo expirado hoje";
+  }
+
+  if (days === 1) {
+    return "Atrasada há 1 dia";
+  }
+
+  return `Atrasada há ${days} dias`;
+}
+
+/* =========================================================
    RENDER
 ========================================================= */
 
@@ -242,6 +321,8 @@ function render() {
   updateStats(filtered);
 
   renderLists(filtered);
+
+  renderOverdue(filtered);
 
   renderEisenhower(filtered);
 }
@@ -311,9 +392,13 @@ function renderCalendar(list) {
           element.classList.add("done");
         }
 
+        if (isOverdue(task)) {
+          element.classList.add("overdue");
+        }
+
         element.dataset.priority = task.priority;
 
-        element.innerHTML = `${
+        element.innerHTML = `${isOverdue(task) ? "🚨 " : ""}${
           task.time ? escapeHtml(task.time) + " · " : ""
         }${escapeHtml(task.title)}`;
 
@@ -341,6 +426,9 @@ function updateStats(list) {
     (task) => task.priority === "Planejar",
   ).length;
 
+  document.getElementById("overdueStat").textContent =
+    list.filter(isOverdue).length;
+
   document.getElementById("doneStat").textContent = list.filter(isDone).length;
 }
 
@@ -352,20 +440,33 @@ function renderLists(list) {
   const today = localISO(new Date());
 
   const future = [...list]
+
     .filter((task) => !isDone(task))
+
+    .filter((task) => !isOverdue(task))
+
     .filter((task) => !task.date || task.date >= today)
+
     .sort(compareTasksByDate)
+
     .slice(0, 5);
 
   const urgent = [...list]
+
     .filter((task) => task.priority === "Fazer agora" && !isDone(task))
+
     .sort(compareTasksByDate)
+
     .slice(0, 5);
 
   renderAgendaList("upcoming", future, false);
 
   renderAgendaList("priorityList", urgent, true);
 }
+
+/* =========================================================
+   LISTAS DO DASHBOARD
+========================================================= */
 
 function renderAgendaList(elementId, list, forcePriority) {
   const container = document.getElementById(elementId);
@@ -410,7 +511,70 @@ function renderAgendaList(elementId, list, forcePriority) {
               </div>
 
               <span class="pill">
+
                 ${forcePriority ? "Fazer agora" : escapeHtml(task.priority)}
+
+              </span>
+
+            </div>
+          `;
+    })
+    .join("");
+}
+
+/* =========================================================
+   TAREFAS ATRASADAS
+========================================================= */
+
+function renderOverdue(list) {
+  const container = document.getElementById("overdueList");
+
+  const overdue = [...list]
+
+    .filter(isOverdue)
+
+    .sort(compareTasksByDate);
+
+  if (overdue.length === 0) {
+    container.innerHTML = `
+        <div class="empty">
+          ✅ Nenhuma tarefa atrasada.
+        </div>
+      `;
+
+    return;
+  }
+
+  container.innerHTML = overdue
+    .map((task) => {
+      return `
+            <div class="overdue-item">
+
+              <div>
+
+                <strong>
+                  ${escapeHtml(task.title)}
+                </strong>
+
+                <div class="overdue-meta">
+
+                  ${escapeHtml(task.area)}
+
+                  · Prazo:
+                  ${formatDate(task.date)}
+
+                  ${task.time ? " às " + escapeHtml(task.time) : ""}
+
+                  · ${escapeHtml(task.priority)}
+
+                </div>
+
+              </div>
+
+              <span class="overdue-badge">
+
+                ${escapeHtml(overdueLabel(task))}
+
               </span>
 
             </div>
@@ -449,6 +613,10 @@ function renderEisenhower(list) {
   renderQuadrant("eisenhowerLater", "countLater", later);
 }
 
+/* =========================================================
+   QUADRANTES
+========================================================= */
+
 function renderQuadrant(listId, countId, list) {
   const container = document.getElementById(listId);
 
@@ -474,7 +642,11 @@ function renderQuadrant(listId, countId, list) {
             <div class="eisenhower-task">
 
               <strong>
+
+                ${isOverdue(task) ? "🚨 " : ""}
+
                 ${escapeHtml(task.title)}
+
               </strong>
 
               <div class="eisenhower-meta">
@@ -495,6 +667,7 @@ function renderQuadrant(listId, countId, list) {
                   task.time
                     ? `
                       <span>•</span>
+
                       <span>
                         ${escapeHtml(task.time)}
                       </span>
@@ -506,6 +679,7 @@ function renderQuadrant(listId, countId, list) {
                   task.estimated !== null
                     ? `
                       <span>•</span>
+
                       <span>
                         ${task.estimated} min
                       </span>
@@ -673,6 +847,10 @@ function formatDate(date) {
   return `${parts[0]}/${parts[1]}/${parts[2]}`;
 }
 
+/* =========================================================
+   TOOLTIP
+========================================================= */
+
 function makeTooltip(task) {
   let tooltip =
     `${task.title}\n` +
@@ -686,8 +864,16 @@ function makeTooltip(task) {
     tooltip += `\nTempo estimado: ${task.estimated} min`;
   }
 
+  if (isOverdue(task)) {
+    tooltip += `\n🚨 ${overdueLabel(task)}`;
+  }
+
   return tooltip;
 }
+
+/* =========================================================
+   SEGURANÇA HTML
+========================================================= */
 
 function escapeHtml(value) {
   if (value === null || value === undefined) {

@@ -110,10 +110,12 @@
           </div>
 
           <!-- =========================================
-             INDICADORES
+             DASHBOARD
         ========================================== -->
 
           <div class="dashboard-side">
+            <!-- INDICADORES -->
+
             <div class="stats stats-horizontal">
               <div class="stat">
                 <span>Total de tarefas</span>
@@ -130,11 +132,18 @@
                 <strong id="plannedStat">0</strong>
               </div>
 
+              <div class="stat stat-overdue">
+                <span>🚨 Atrasadas</span>
+                <strong id="overdueStat">0</strong>
+              </div>
+
               <div class="stat">
                 <span>Concluídas</span>
                 <strong id="doneStat">0</strong>
               </div>
             </div>
+
+            <!-- PRÓXIMAS / PRIORIDADES -->
 
             <div class="overview-lists">
               <div class="card agenda-list">
@@ -155,6 +164,24 @@
                 <div id="priorityList">
                   <div class="empty">Carregando prioridades...</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- =========================================
+               TAREFAS ATRASADAS
+          ========================================== -->
+
+            <div class="card overdue-card">
+              <div class="list-heading overdue-heading">
+                <div>
+                  <h3>🚨 Tarefas atrasadas</h3>
+
+                  <p>Atividades não concluídas cujo prazo já expirou.</p>
+                </div>
+              </div>
+
+              <div id="overdueList">
+                <div class="empty">Verificando prazos...</div>
               </div>
             </div>
           </div>
@@ -313,9 +340,7 @@
       </section>
     </div>
 
-    <!-- =========================================
-       TOAST
-  ========================================== -->
+    <!-- TOAST -->
 
     <div class="toast" id="toast"></div>
 
