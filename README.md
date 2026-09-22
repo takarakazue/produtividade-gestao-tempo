@@ -42,6 +42,7 @@ Por meio dele é possível:
 - visualizar o total de tarefas;
 - acompanhar tarefas prioritárias;
 - visualizar tarefas concluídas;
+- identificar automaticamente tarefas não concluídas com prazo expirado;
 - consultar as próximas atividades;
 - acompanhar o planejamento pelo calendário;
 - visualizar a Matriz de Eisenhower.
@@ -87,7 +88,7 @@ Também é possível utilizar filtros por **área** e **prioridade**, facilitand
 
 ## 🤖 Utilização da Inteligência Artificial
 
-A Inteligência Artificial é utilizada como apoio à organização, classificação e priorização das tarefas.
+A Inteligência Artificial é utilizada como apoio à organização e à tomada de decisão.
 
 Ao cadastrar uma tarefa, o sistema envia as informações para o **Google Gemini**, que analisa a atividade e retorna:
 
@@ -232,6 +233,15 @@ Essa arquitetura permite separar a **interface visual**, a **automação**, a **
 
 ---
 
+## 🔗 Links do projeto
+
+- **Dashboard publicado (GitHub Pages):** https://takarakazue.github.io/produtividade-gestao-tempo/
+- **Código-fonte e documentação (GitHub):** https://github.com/takarakazue/produtividade-gestao-tempo
+
+O dashboard publicado permite visualizar a interface desenvolvida e demonstrar o funcionamento do sistema. O repositório contém o código-fonte, o README e as imagens utilizadas na documentação do projeto.
+
+---
+
 ## 🚀 Como utilizar
 
 1. Acesse o dashboard.
@@ -264,6 +274,7 @@ O sistema desenvolvido possui:
 - lista de próximas tarefas;
 - visualização de tarefas prioritárias;
 - acompanhamento de status;
+- monitoramento de tarefas atrasadas por data e horário;
 - integração com base de dados;
 - automação entre diferentes ferramentas.
 
@@ -277,7 +288,7 @@ A utilização do sistema busca proporcionar:
 - redução do tempo gasto organizando tarefas;
 - melhor visualização das prioridades;
 - redução de esquecimentos;
-- apoio ao planejamento e à organização da rotina;
+- apoio ao planejamento da rotina por datas, horários e calendário mensal;
 - redução de retrabalho;
 - maior clareza sobre tarefas urgentes e importantes;
 - melhor equilíbrio entre trabalho, faculdade, vida pessoal e família.
