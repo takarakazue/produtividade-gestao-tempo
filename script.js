@@ -220,6 +220,104 @@ function isDone(task) {
 }
 
 /* =========================================================
+   ATUALIZAR STATUS
+========================================================= */
+
+let statusUpdateInProgress = false;
+
+async function updateTaskStatus(pageId, newStatus) {
+  if (!pageId || statusUpdateInProgress) {
+    return;
+  }
+
+  statusUpdateInProgress = true;
+
+  try {
+    showToast("Atualizando status...");
+
+    const response = await fetch(DASHBOARD_WEBHOOK_URL, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        acao: "status",
+        page_id: pageId,
+        status: newStatus,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao atualizar status: ${response.status}`);
+    }
+
+    if (newStatus === "Em andamento") {
+      showToast("▶ Tarefa iniciada!");
+    }
+
+    if (newStatus === "Concluído") {
+      showToast("✅ Tarefa concluída!");
+    }
+
+    await loadTasks(false);
+  } catch (error) {
+    console.error("Erro ao atualizar status:", error);
+
+    showToast("Não foi possível atualizar o status.");
+  } finally {
+    statusUpdateInProgress = false;
+  }
+}
+
+/* =========================================================
+   CONTROLE VISUAL DO STATUS
+========================================================= */
+
+function taskStatusControl(task) {
+  const status = (task.status || "").toLowerCase();
+
+  if (isDone(task)) {
+    return `
+      <span class="task-status-done">
+        ✅ Concluída
+      </span>
+    `;
+  }
+
+  if (status === "em andamento") {
+    return `
+      <div class="task-status-actions">
+
+        <span class="task-status-progress">
+          ● Em andamento
+        </span>
+
+        <button
+          type="button"
+          class="task-status-btn task-finish-btn"
+          onclick="updateTaskStatus('${task.id}', 'Concluído')"
+        >
+          ✓ Concluir
+        </button>
+
+      </div>
+    `;
+  }
+
+  return `
+    <button
+      type="button"
+      class="task-status-btn task-start-btn"
+      onclick="updateTaskStatus('${task.id}', 'Em andamento')"
+    >
+      ▶ Iniciar
+    </button>
+  `;
+}
+
+/* =========================================================
    PRAZO / ATRASO
 ========================================================= */
 
@@ -323,6 +421,8 @@ function render() {
   renderLists(filtered);
 
   renderOverdue(filtered);
+
+  renderCompleted(filtered);
 
   renderEisenhower(filtered);
 }
@@ -473,10 +573,10 @@ function renderAgendaList(elementId, list, forcePriority) {
 
   if (list.length === 0) {
     container.innerHTML = `
-        <div class="empty">
-          Nenhuma tarefa.
-        </div>
-      `;
+      <div class="empty">
+        Nenhuma tarefa.
+      </div>
+    `;
 
     return;
   }
@@ -484,40 +584,40 @@ function renderAgendaList(elementId, list, forcePriority) {
   container.innerHTML = list
     .map((task) => {
       return `
-            <div class="agenda-item">
+        <div class="agenda-item">
 
-              <div>
+          <div>
 
-                <strong>
-                  ${escapeHtml(task.title)}
-                </strong>
+            <strong>
+              ${escapeHtml(task.title)}
+            </strong>
 
-                <div class="meta">
+            <div class="meta">
 
-                  ${formatDate(task.date)}
+              ${formatDate(task.date)}
 
-                  ${task.time ? " · " + escapeHtml(task.time) : ""}
+              ${task.time ? " · " + escapeHtml(task.time) : ""}
 
-                  · ${escapeHtml(task.area)}
+              · ${escapeHtml(task.area)}
 
-                  ${
-                    task.estimated !== null
-                      ? " · " + task.estimated + " min"
-                      : ""
-                  }
-
-                </div>
-
-              </div>
-
-              <span class="pill">
-
-                ${forcePriority ? "Fazer agora" : escapeHtml(task.priority)}
-
-              </span>
+              ${task.estimated !== null ? " · " + task.estimated + " min" : ""}
 
             </div>
-          `;
+
+          </div>
+
+          <div class="task-control-area">
+
+            <span class="pill">
+              ${forcePriority ? "Fazer agora" : escapeHtml(task.priority)}
+            </span>
+
+            ${taskStatusControl(task)}
+
+          </div>
+
+        </div>
+      `;
     })
     .join("");
 }
@@ -529,18 +629,14 @@ function renderAgendaList(elementId, list, forcePriority) {
 function renderOverdue(list) {
   const container = document.getElementById("overdueList");
 
-  const overdue = [...list]
-
-    .filter(isOverdue)
-
-    .sort(compareTasksByDate);
+  const overdue = [...list].filter(isOverdue).sort(compareTasksByDate);
 
   if (overdue.length === 0) {
     container.innerHTML = `
-        <div class="empty">
-          ✅ Nenhuma tarefa atrasada.
-        </div>
-      `;
+      <div class="empty">
+        ✅ Nenhuma tarefa atrasada.
+      </div>
+    `;
 
     return;
   }
@@ -548,37 +644,103 @@ function renderOverdue(list) {
   container.innerHTML = overdue
     .map((task) => {
       return `
-            <div class="overdue-item">
+        <div class="overdue-item">
 
-              <div>
+          <div>
 
-                <strong>
-                  ${escapeHtml(task.title)}
-                </strong>
+            <strong>
+              ${escapeHtml(task.title)}
+            </strong>
 
-                <div class="overdue-meta">
+            <div class="overdue-meta">
 
-                  ${escapeHtml(task.area)}
+              ${escapeHtml(task.area)}
 
-                  · Prazo:
-                  ${formatDate(task.date)}
+              · Prazo:
+              ${formatDate(task.date)}
 
-                  ${task.time ? " às " + escapeHtml(task.time) : ""}
+              ${task.time ? " às " + escapeHtml(task.time) : ""}
 
-                  · ${escapeHtml(task.priority)}
-
-                </div>
-
-              </div>
-
-              <span class="overdue-badge">
-
-                ${escapeHtml(overdueLabel(task))}
-
-              </span>
+              · ${escapeHtml(task.priority)}
 
             </div>
-          `;
+
+          </div>
+
+          <div class="task-control-area">
+
+            <span class="overdue-badge">
+              ${escapeHtml(overdueLabel(task))}
+            </span>
+
+            ${taskStatusControl(task)}
+
+          </div>
+
+        </div>
+      `;
+    })
+    .join("");
+}
+
+/* =========================================================
+   TAREFAS CONCLUÍDAS
+========================================================= */
+
+function renderCompleted(list) {
+  const container = document.getElementById("completedList");
+
+  const completed = [...list]
+    .filter(isDone)
+    .sort((a, b) => {
+      const dateA = `${a.date || "0000-00-00"} ${a.time || "00:00"}`;
+      const dateB = `${b.date || "0000-00-00"} ${b.time || "00:00"}`;
+
+      return dateB.localeCompare(dateA);
+    })
+    .slice(0, 8);
+
+  if (completed.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        Nenhuma tarefa concluída.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = completed
+    .map((task) => {
+      return `
+        <div class="completed-item">
+
+          <div>
+
+            <strong>
+              ${escapeHtml(task.title)}
+            </strong>
+
+            <div class="completed-meta">
+
+              ${escapeHtml(task.area)}
+
+              · ${formatDate(task.date)}
+
+              ${task.time ? " · " + escapeHtml(task.time) : ""}
+
+              · ${escapeHtml(task.priority)}
+
+            </div>
+
+          </div>
+
+          <span class="completed-badge">
+            ✅ Concluída
+          </span>
+
+        </div>
+      `;
     })
     .join("");
 }
