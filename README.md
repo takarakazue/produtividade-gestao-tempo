@@ -41,7 +41,9 @@ Por meio dele é possível:
 - informar uma área ou deixar a IA decidir;
 - visualizar o total de tarefas;
 - acompanhar tarefas prioritárias;
-- visualizar tarefas concluídas;
+- iniciar tarefas e alterar o status para **Em andamento**;
+- concluir tarefas diretamente pelo dashboard;
+- visualizar tarefas concluídas em uma seção específica;
 - identificar automaticamente tarefas não concluídas com prazo expirado;
 - consultar as próximas atividades;
 - acompanhar o planejamento pelo calendário;
@@ -49,7 +51,9 @@ Por meio dele é possível:
 
 ### Dashboard principal
 
-![Dashboard Geral](images/dashboard-geral.png)
+![Dashboard - Visão Geral](images/dashboard-geral-parte-superior.png)
+
+A visão geral reúne cadastro, indicadores, próximas tarefas, prioridades e controles de status (Iniciar, Em andamento e Concluir).
 
 ---
 
@@ -104,7 +108,9 @@ Essa funcionalidade utiliza **lógica de programação**, sem necessidade de Int
 
 ### Tarefas atrasadas
 
-![Monitoramento de Tarefas Atrasadas](images/dashboard-geral.png)
+![Acompanhamento de Tarefas](images/dashboard-geral-acompanhamentos.png)
+
+O acompanhamento separa visualmente tarefas atrasadas e tarefas concluídas; ao concluir uma atividade, ela deixa de ser considerada atrasada.
 
 ---
 
@@ -170,7 +176,7 @@ Webhook Response
 Dashboard atualizado
 ```
 
-Assim, as tarefas armazenadas na base podem ser utilizadas pelo próprio dashboard para alimentar o calendário, os indicadores, as listas e a Matriz de Eisenhower.
+Assim, as tarefas armazenadas na base podem ser utilizadas pelo próprio dashboard para alimentar o calendário, os indicadores, as listas e a Matriz de Eisenhower. O dashboard também permite acompanhar o andamento das atividades por meio dos botões **Iniciar** e **Concluir**, mantendo o status sincronizado com a base de tarefas.
 
 ### Cenário de integração do Dashboard
 
@@ -219,7 +225,7 @@ Cada tarefa pode possuir as seguintes informações:
 
 ## 🔁 Fluxo completo da solução
 
-O sistema possui dois fluxos principais.
+O sistema possui fluxos integrados para cadastro, visualização e acompanhamento do status das tarefas.
 
 ### 1. Cadastro inteligente
 
@@ -251,6 +257,17 @@ HTML / JavaScript
 Dashboard
 ```
 
+### 3. Acompanhamento de status
+
+O usuário pode controlar a execução das tarefas diretamente no dashboard:
+
+- **Iniciar** — altera a tarefa para **Em andamento**;
+- **Concluir** — altera a tarefa para **Concluída**;
+- tarefas concluídas deixam de ser tratadas como pendentes ou atrasadas;
+- atividades finalizadas são apresentadas em uma seção própria de **Tarefas concluídas**.
+
+Dessa forma, o dashboard funciona não apenas como painel de consulta, mas também como interface de acompanhamento da execução das atividades.
+
 Essa arquitetura permite separar a **interface visual**, a **automação**, a **Inteligência Artificial** e a **base de dados**.
 
 ---
@@ -276,6 +293,8 @@ O dashboard publicado permite visualizar a interface desenvolvida e demonstrar o
 8. O Gemini analisará e classificará a tarefa.
 9. O Make registrará as informações no Notion.
 10. O dashboard consulta os dados armazenados e apresenta as tarefas nas áreas correspondentes.
+11. Para começar uma atividade, clique em **Iniciar**; o status passa para **Em andamento**.
+12. Ao finalizar, clique em **Concluir**; a tarefa passa para **Concluída** e é exibida na seção de tarefas concluídas.
 
 ---
 
@@ -295,7 +314,9 @@ O sistema desenvolvido possui:
 - indicadores de produtividade;
 - lista de próximas tarefas;
 - visualização de tarefas prioritárias;
-- acompanhamento de status;
+- acompanhamento de status **Não iniciada → Em andamento → Concluída**;
+- botões **Iniciar** e **Concluir** no dashboard;
+- seção específica de tarefas concluídas;
 - monitoramento automático de tarefas atrasadas;
 - identificação de prazo expirado por data e horário;
 - indicador com a quantidade de tarefas atrasadas;
@@ -333,7 +354,8 @@ Meu-Sistema-Operacional-Pessoal/
 ├── README.md
 │
 └── images/
-    ├── dashboard-geral.png
+    ├── dashboard-geral-parte-superior.png
+    ├── dashboard-geral-acompanhamentos.png
     ├── calendario.png
     ├── eisenhower.png
     ├── make-cadastro.png
@@ -347,7 +369,7 @@ Meu-Sistema-Operacional-Pessoal/
 
 O projeto demonstra como diferentes ferramentas digitais podem ser integradas para criar um sistema pessoal de produtividade.
 
-A combinação entre **dashboard web, Matriz de Eisenhower, calendário, automação, Inteligência Artificial e armazenamento de dados** permite transformar o gerenciamento de tarefas em um processo mais visual, centralizado e automatizado.
+A combinação entre **dashboard web, Matriz de Eisenhower, calendário, automação, Inteligência Artificial e armazenamento de dados** permite transformar o gerenciamento de tarefas em um processo mais visual, centralizado e automatizado. O acompanhamento por status permite ainda visualizar a evolução das atividades desde o início até a conclusão.
 
 Mais do que simplesmente registrar tarefas, a solução utiliza IA para auxiliar na organização das prioridades e no planejamento do tempo.
 
