@@ -276,8 +276,12 @@ Essa arquitetura permite separar a **interface visual**, a **automação**, a **
 
 - **Dashboard publicado (GitHub Pages):** https://takarakazue.github.io/produtividade-gestao-tempo/
 - **Código-fonte e documentação (GitHub):** https://github.com/takarakazue/produtividade-gestao-tempo
+- **Make — cenário do Dashboard:** https://eu1.make.com/public/shared-scenario/rzMGqzSNITR/sistema-operacional-pessoal-dashboard
+- **Make — cenário de Cadastro:** https://eu1.make.com/public/shared-scenario/uYu9e34v4SG/sistema-operacional-pessoal-html
+- **Notion — base do Sistema Operacional Pessoal:** https://app.notion.com/p/Meu-Sistema-Operacional-Pessoal-3dcf24962a4c8056bc42fb9162f70623?source=copy_link
+- **Vídeo Pitch:** https://drive.google.com/file/d/1HzbP59nLn9wDPtGBkJInTyPbzTSCy_fY/view?usp=sharing
 
-O dashboard publicado permite visualizar a interface desenvolvida e demonstrar o funcionamento do sistema. O repositório contém o código-fonte, o README e as imagens utilizadas na documentação do projeto.
+Os links acima permitem acessar a interface publicada, o código-fonte, os cenários compartilhados do Make, a base do Notion e o vídeo de apresentação do projeto.
 
 ---
 
